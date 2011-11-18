@@ -6,6 +6,7 @@ import net.citizensnpcs.Settings;
 import net.citizensnpcs.permissions.CitizensGroup;
 import net.citizensnpcs.permissions.PermissionManager;
 import net.citizensnpcs.questers.QuestUtils;
+import net.citizensnpcs.questers.quests.Objective;
 import net.citizensnpcs.questers.quests.progress.ObjectiveProgress;
 import net.citizensnpcs.questers.quests.progress.QuestUpdater;
 import net.citizensnpcs.utils.LocationUtils;
@@ -25,12 +26,13 @@ public class CombatQuest implements QuestUpdater {
 
 	@Override
 	public boolean update(Event event, ObjectiveProgress progress) {
+		Objective objective = progress.getObjective();
 		if (event instanceof EntityDeathEvent) {
 			EntityDeathEvent ev = (EntityDeathEvent) event;
 			if (!(ev.getEntity() instanceof Player))
 				return false;
 			Player player = (Player) ev.getEntity();
-			String search = progress.getObjective().getString().toLowerCase();
+			String search = objective.getString().toLowerCase();
 			boolean found = false, reversed = !search.isEmpty()
 					&& search.charAt(0) == '-';
 			if (search.contains("*")
@@ -54,7 +56,10 @@ public class CombatQuest implements QuestUpdater {
 						|| !LocationUtils.withinRange(player.getLocation(),
 								details.getLocation(),
 								Settings.getInt("CombatExploitRadius"))) {
-					progress.addAmount(1);
+					if (LocationUtils.withinRange(player.getLocation(), objective.getLocation(),
+							objective.getAmount())) {
+						progress.addAmount(1);
+					}
 				}
 				int times = (details == null || !details.getPlayer().equals(
 						player)) ? 1 : details.getTimes() + 1;
@@ -62,7 +67,7 @@ public class CombatQuest implements QuestUpdater {
 				playerKills.put(progress.getPlayer(), details);
 			}
 		}
-		return progress.getAmount() >= progress.getObjective().getAmount();
+		return progress.getAmount() >= objective.getAmount();
 	}
 
 	@Override
