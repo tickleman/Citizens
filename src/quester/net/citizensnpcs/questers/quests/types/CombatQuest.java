@@ -48,7 +48,7 @@ public class CombatQuest implements QuestUpdater {
 					}
 				}
 			}
-			if ((reversed && !found) || (!reversed && found)) {
+			if (reversed ^ found) {
 				KillDetails details = playerKills.get(progress.getPlayer());
 				if (details == null
 						|| details.getTimes() < Settings

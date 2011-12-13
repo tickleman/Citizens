@@ -483,63 +483,25 @@ public class BasicCommands extends CommandHandler {
 			max = 7)
 	@CommandPermissions("basic.modify.moveto")
 	public static void moveTo(CommandContext args, Player player, HumanNPC npc) {
-		int index = 1;
 		double x = 0, y = 0, z = 0;
-		float yaw = npc.getLocation().getYaw();
-		float pitch = npc.getLocation().getPitch();
+		float yaw = npc.getLocation().getYaw(), pitch = npc.getLocation()
+				.getPitch();
 		String world = npc.getWorld().getName();
 		switch (args.argsLength()) {
-		case 4:
-			x = Double.parseDouble(args.getString(index));
-			index++;
-			y = Double.parseDouble(args.getString(index));
-			index++;
-			z = Double.parseDouble(args.getString(index));
-			break;
-		case 5:
-			x = Double.parseDouble(args.getString(index));
-			index++;
-			y = Double.parseDouble(args.getString(index));
-			index++;
-			z = Double.parseDouble(args.getString(index));
-			index++;
-			world = args.getString(index);
-			if (Bukkit.getServer().getWorld(world) == null) {
-				Messaging.sendError(player, "Invalid world.");
-				return;
-			}
-			break;
-		case 6:
-			x = Double.parseDouble(args.getString(index));
-			index++;
-			y = Double.parseDouble(args.getString(index));
-			index++;
-			z = Double.parseDouble(args.getString(index));
-			index++;
-			world = args.getString(index);
-			if (Bukkit.getServer().getWorld(world) == null) {
-				Messaging.sendError(player, "Invalid world.");
-				return;
-			}
-			index++;
-			pitch = Float.parseFloat(args.getString(index));
-			break;
 		case 7:
-			x = Double.parseDouble(args.getString(index));
-			index++;
-			y = Double.parseDouble(args.getString(index));
-			index++;
-			z = Double.parseDouble(args.getString(index));
-			index++;
-			world = args.getString(index);
+			yaw = Float.parseFloat(args.getString(6));
+		case 6:
+			pitch = Float.parseFloat(args.getString(5));
+		case 5:
+			world = args.getString(4);
 			if (Bukkit.getServer().getWorld(world) == null) {
 				Messaging.sendError(player, "Invalid world.");
 				return;
 			}
-			index++;
-			pitch = Float.parseFloat(args.getString(index));
-			index++;
-			yaw = Float.parseFloat(args.getString(index));
+		case 4:
+			x = Double.parseDouble(args.getString(1));
+			y = Double.parseDouble(args.getString(2));
+			z = Double.parseDouble(args.getString(3));
 		}
 		Location loc = new Location(Bukkit.getServer().getWorld(world), x, y,
 				z, pitch, yaw);
@@ -863,12 +825,14 @@ public class BasicCommands extends CommandHandler {
 			if (npc.getWaypoints().size() != 0
 					&& index >= npc.getWaypoints().size()) {
 				player.sendMessage(ChatColor.GRAY
-						+ "Index out of bounds. This NPC has only "
+						+ "Index out of bounds. This NPC only has "
 						+ StringUtils.wrap(npc.getWaypoints().size())
 						+ " waypoints.");
 				return;
 			}
 		}
+		if (index < 0)
+			index = 0;
 		PathEditingSession editing = NPCDataManager.pathEditors.get(player);
 		int UID = npc.getUID();
 		if (editing == null) {

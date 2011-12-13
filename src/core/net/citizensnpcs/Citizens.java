@@ -33,7 +33,6 @@ import net.citizensnpcs.resources.npclib.HumanNPC;
 import net.citizensnpcs.resources.npclib.NPCManager;
 import net.citizensnpcs.resources.npclib.creatures.CreatureNPCType;
 import net.citizensnpcs.resources.npclib.creatures.CreatureTask;
-import net.citizensnpcs.resources.register.payment.Method;
 import net.citizensnpcs.resources.sk89q.CitizensCommandsManager;
 import net.citizensnpcs.resources.sk89q.CommandPermissionsException;
 import net.citizensnpcs.resources.sk89q.CommandUsageException;
@@ -62,8 +61,6 @@ import com.google.common.base.Joiner;
  */
 public class Citizens extends JavaPlugin {
 	public static Citizens plugin;
-	public static Method economy;
-
 	public static CitizensCommandsManager<Player> commands = new CitizensCommandsManager<Player>();
 
 	public static boolean initialized = false;
@@ -95,9 +92,9 @@ public class Citizens extends JavaPlugin {
 		new PlayerListen().registerEvents(this);
 
 		// register our commands
-		Citizens.commands.register(BasicCommands.class);
-		Citizens.commands.register(ToggleCommands.class);
-		Citizens.commands.register(WaypointCommands.class);
+		commands.register(BasicCommands.class);
+		commands.register(ToggleCommands.class);
+		commands.register(WaypointCommands.class);
 
 		// initialize permissions system
 		new PermissionManager(getServer().getPluginManager());
@@ -233,13 +230,6 @@ public class Citizens extends JavaPlugin {
 	// get the CURRENT version of Citizens (dev-build or release)
 	public static String localVersion() {
 		return Version.VERSION;
-	}
-
-	// used for economy plugin support
-	public static void setMethod(Method method) {
-		if (economy == null) {
-			economy = method;
-		}
 	}
 
 	// TODO: clean this up a little bit.
